@@ -1,50 +1,40 @@
 import { Button, Form, Input, Typography } from "antd";
-import { GoogleLoginButton } from "react-social-login-buttons";
-import { Link } from "react-router-dom";
-import "./Auth.css";
+import type { forgotPassword } from "../../api/userApi";
 import { useState } from "react";
-import { registerUser } from "../../api/userApi";
 
-interface ISignUpFormValue {
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
+const ForgotPassword = () => {
+  // const [form] = Form.useForm<ISignUpFormValue>();
+  // const [loading, setLoading] = useState<boolean>(false);
 
-const Signup = () => {
-  const [form] = Form.useForm<ISignUpFormValue>();
-  const [loading, setLoading] = useState<boolean>(false);
+  // const handleForgot = async (value: ISignUpFormValue) => {
+  //   try {
+  //     const res = await forgotPassword(
+  //       value.username,
+  //       value.email,
+  //       value.password,
+  //       value.confirmPassword
+  //     );
+  //     if (res.data) {
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     return error;
+  //   }
+  // };
 
-  const handleSignUp = async (value: ISignUpFormValue) => {
-    try {
-      const res = await registerUser(
-        value.username,
-        value.email,
-        value.password,
-        value.confirmPassword
-      );
-      if (res.data) {
-      }
-    } catch (error) {
-      console.error(error);
-      return error;
-    }
-  };
-
-  const onFinish = async (value: ISignUpFormValue) => {
-    setLoading(true);
-    try {
-      await handleSignUp(value);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-    }
-  };
+  // const onFinish = async (value: ISignUpFormValue) => {
+  //   setLoading(true);
+  //   try {
+  //     await handleForgot(value);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
-    <div className="signup-container">
-      <Typography.Title level={2}>Get Started Now</Typography.Title>
+    <div className="forgot-container">
+      <Typography.Title level={2}>Forgot Password</Typography.Title>
       <Form form={form} onFinish={onFinish}>
         <Form.Item
           name="username"
@@ -65,7 +55,7 @@ const Signup = () => {
           <Input.Password placeholder="Password" />
         </Form.Item>
         <Form.Item
-          name="confirmPassword"
+          name="confirm"
           dependencies={["password"]}
           hasFeedback
           rules={[
@@ -92,17 +82,14 @@ const Signup = () => {
           <Button
             type="primary"
             htmlType="submit"
-            className="signup-form-button"
-            // onClick={() => form.submit()}
+            className="forgot-form-button"
           >
             Sign up
           </Button>
-          Or <Link to="/login">login now!</Link>
         </Form.Item>
-        <GoogleLoginButton onClick={() => alert("Hello")} />
       </Form>
     </div>
   );
 };
 
-export default Signup;
+export default ForgotPassword;
