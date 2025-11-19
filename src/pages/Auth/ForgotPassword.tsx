@@ -14,10 +14,10 @@ const ForgotPassword = () => {
       //navigate ve trang chu
       if (res.data) {
         //navigate ve trang chu, display message
-        navigate("/Login");
+        navigate("/login");
       } else {
         //display loi?, ve trang chu
-        navigate("/Login");
+        navigate("/login");
       }
     } catch (error) {
       console.error(error);

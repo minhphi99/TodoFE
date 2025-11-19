@@ -17,7 +17,7 @@ export const createTodo = async (data: {
 }) => {
   try {
     const res = await axiosClient.post(`${BASE_URL}`, data);
-    return res.data.result;
+    return res.data;
   } catch (error) {
     return error;
   }
@@ -26,7 +26,7 @@ export const createTodo = async (data: {
 export const getTodoById = async (id: string) => {
   try {
     const res = await axiosClient.get(`${BASE_URL}/${id}`);
-    return res.data.result;
+    return res.data;
   } catch (error) {
     return error;
   }
@@ -38,7 +38,7 @@ export const updateTodoById = async (
 ) => {
   try {
     const res = await axiosClient.put(`${BASE_URL}/${id}`, data);
-    return res.data.result;
+    return res.data;
   } catch (error) {
     return error;
   }
@@ -47,7 +47,7 @@ export const updateTodoById = async (
 export const deleteTodo = async (id: string) => {
   try {
     const res = await axiosClient.delete(`${BASE_URL}/${id}`);
-    return res.data.result;
+    return res.data;
   } catch (error) {
     return error;
   }

@@ -19,7 +19,6 @@ const EditTodo = () => {
         console.error("Error fetching todo:", error);
       }
     };
-
     fetchTodo();
   }, [id]);
 

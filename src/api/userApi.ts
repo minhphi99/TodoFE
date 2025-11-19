@@ -1,6 +1,44 @@
 import axiosClient from "./axiosClient";
+import { refreshClient } from "./refreshClient";
 
 const BASE_URL = import.meta.env.VITE_AUTH_BASE_URL;
+
+let isRefreshing = false;
+let failedQueue: any[] = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    error ? prom.reject(error) : prom.resolve(token);
+  });
+  failedQueue = [];
+};
+
+export async function refreshToken() {
+  if (isRefreshing) {
+    return new Promise((resolve, reject) => {
+      failedQueue.push({ resolve, reject });
+    });
+  }
+
+  isRefreshing = true;
+
+  try {
+    const res = await refreshClient.post("/auth/refresh", {
+      refreshToken: localStorage.getItem("refreshToken"),
+    });
+
+    const newToken = res.data.accessToken;
+    localStorage.setItem("accessToken", newToken);
+
+    processQueue(null, newToken);
+    return newToken;
+  } catch (err) {
+    processQueue(err, null);
+    throw err;
+  } finally {
+    isRefreshing = false;
+  }
+}
 
 export const loginGoogle = async () => {
   const res = await axiosClient.get(`${import.meta.env.VITE_URL}/google`);
@@ -85,15 +123,6 @@ export const forgotPassword = async (token: string, newPassword: string) => {
     const res = await axiosClient.post(`${BASE_URL}/resetpw/${token}`, {
       newPassword,
     });
-    return res.data.result;
-  } catch (error) {
-    return error;
-  }
-};
-
-export const refreshToken = async () => {
-  try {
-    const res = await axiosClient.post(`${BASE_URL}/refresh`);
     return res.data.result;
   } catch (error) {
     return error;

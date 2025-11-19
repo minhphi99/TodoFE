@@ -31,10 +31,10 @@ axiosClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; // Prevent infinite loop
       try {
-        await refreshToken();
+        const newToken = await refreshToken();
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return axiosClient(originalRequest);
       } catch (refreshError) {
-        // If refresh also fails, redirect to login
         console.error("Token refresh failed:", refreshError);
         window.location.href = "/login";
         return Promise.reject(refreshError);

@@ -15,18 +15,18 @@ const TodoList = () => {
   const [loading, setLoading] = useState(true);
   const [newTodo, setNewTodo] = useState({ title: "", description: "" });
 
-  useEffect(() => {
-    const fetchTodos = async () => {
-      try {
-        const todos = await getAllTodos();
-        setTodos(todos);
-      } catch (error) {
-        console.error("Error fetching todos:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchTodos = async () => {
+    try {
+      const todos = await getAllTodos();
+      setTodos(todos);
+    } catch (error) {
+      console.error("Error fetching todos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchTodos();
   }, []);
 
@@ -43,7 +43,9 @@ const TodoList = () => {
     e.preventDefault();
     try {
       const createdTodo = await createTodo(newTodo);
-      setTodos([...todos, createdTodo]);
+      if (createdTodo && createdTodo._id) {
+        setTodos((prev) => [...prev, createdTodo]);
+      }
       setNewTodo({ title: "", description: "" });
     } catch (error) {
       console.error("Error creating todo:", error);
@@ -53,10 +55,6 @@ const TodoList = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewTodo({ ...newTodo, [e.target.name]: e.target.value });
   };
-
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
 
   return (
     <div className="todo-container">
@@ -83,24 +81,26 @@ const TodoList = () => {
         </button>
       </form>
       <ul className="todo-list">
-        {todos.map((todo) => (
-          <li key={todo._id} className="todo-item">
-            <Link to={`/todo/${todo._id}`} className="todo-title">
-              {todo.title}
-            </Link>
-            <div className="todo-buttons">
-              <button
-                onClick={() => handleDelete(todo._id)}
-                className="todo-button"
-              >
-                Delete
-              </button>
-              <Link to={`/todo/edit/${todo._id}`} className="todo-button">
-                Edit
+        {todos.filter(Boolean).map((todo) =>
+          todo ? (
+            <li key={todo._id} className="todo-item">
+              <Link to={`/todo/${todo._id}`} className="todo-title">
+                {todo.title}
               </Link>
-            </div>
-          </li>
-        ))}
+              <div className="todo-buttons">
+                <button
+                  onClick={() => handleDelete(todo._id)}
+                  className="todo-button"
+                >
+                  Delete
+                </button>
+                <Link to={`/todo/edit/${todo._id}`} className="todo-button">
+                  Edit
+                </Link>
+              </div>
+            </li>
+          ) : null
+        )}
       </ul>
     </div>
   );

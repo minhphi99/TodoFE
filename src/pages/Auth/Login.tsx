@@ -68,9 +68,9 @@ const Login = () => {
             <Checkbox>Remember me</Checkbox>
           </Form.Item>
 
-          <a className="login-form-forgot" href="">
-            Forgot password
-          </a>
+          <Link className="login-form-forgot" to="/forgotpw">
+            Forgot Password
+          </Link>
         </Form.Item>
 
         <Form.Item>
@@ -78,7 +78,6 @@ const Login = () => {
             type="primary"
             htmlType="submit"
             className="login-form-button"
-            // onClick={() => form.submit()}
           >
             Log in
           </Button>
