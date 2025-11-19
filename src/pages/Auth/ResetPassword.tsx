@@ -1,32 +1,20 @@
 import { Button, Form, Input, Typography } from "antd";
-import { GoogleLoginButton } from "react-social-login-buttons";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./Auth.css";
+import { forgotPassword } from "../../api/userApi";
 import { useState } from "react";
-import { registerUser } from "../../api/userApi";
+import { useParams } from "react-router-dom";
 
-export interface ISignUpFormValue {
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
-const Signup = () => {
-  const [form] = Form.useForm<ISignUpFormValue>();
+const ResetPassword = () => {
+  const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
-  const navigate = useNavigate();
 
-  const handleSignUp = async (value: ISignUpFormValue) => {
+  const handleResetPW = async (password: string) => {
     try {
-      const res = await registerUser(
-        value.username,
-        value.email,
-        value.password,
-        value.confirmPassword
-      );
-      if (res === 200) {
-        navigate("/login");
+      const { token } = useParams();
+      console.log(token);
+      const res = await forgotPassword(token as string, password);
+      if (res.data) {
       }
     } catch (error) {
       console.error(error);
@@ -34,10 +22,10 @@ const Signup = () => {
     }
   };
 
-  const onFinish = async (value: ISignUpFormValue) => {
+  const onFinish = async (password: string) => {
     setLoading(true);
     try {
-      await handleSignUp(value);
+      await handleResetPW(password);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -45,21 +33,9 @@ const Signup = () => {
   };
 
   return (
-    <div className="signup-container">
-      <Typography.Title level={2}>Get Started Now</Typography.Title>
+    <div className="login-container">
+      <Typography.Title level={2}>Welcome back</Typography.Title>
       <Form form={form} onFinish={onFinish}>
-        <Form.Item
-          name="username"
-          rules={[{ required: true, message: "Please input your Username!" }]}
-        >
-          <Input placeholder="Username" />
-        </Form.Item>
-        <Form.Item
-          name="email"
-          rules={[{ required: true, message: "Please input your Email!" }]}
-        >
-          <Input placeholder="Email" />
-        </Form.Item>
         <Form.Item
           name="password"
           rules={[{ required: true, message: "Please input your Password!" }]}
@@ -89,22 +65,19 @@ const Signup = () => {
         >
           <Input.Password placeholder="Confirm Password" />
         </Form.Item>
-
         <Form.Item>
           <Button
             type="primary"
             htmlType="submit"
-            className="signup-form-button"
-            // onClick={() => form.submit()}
+            className="login-form-button"
           >
-            Sign up
+            Reset
           </Button>
-          Or <Link to="/login">login now!</Link>
+          Or <Link to="/signup">register now!</Link>
         </Form.Item>
-        <GoogleLoginButton onClick={() => alert("Hello")} />
       </Form>
     </div>
   );
 };
 
-export default Signup;
+export default ResetPassword;

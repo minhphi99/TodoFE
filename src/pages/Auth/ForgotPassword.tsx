@@ -1,81 +1,49 @@
 import { Button, Form, Input, Typography } from "antd";
-import type { forgotPassword } from "../../api/userApi";
+import { resetPassword } from "../../api/userApi";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
-  // const [form] = Form.useForm<ISignUpFormValue>();
-  // const [loading, setLoading] = useState<boolean>(false);
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
-  // const handleForgot = async (value: ISignUpFormValue) => {
-  //   try {
-  //     const res = await forgotPassword(
-  //       value.username,
-  //       value.email,
-  //       value.password,
-  //       value.confirmPassword
-  //     );
-  //     if (res.data) {
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     return error;
-  //   }
-  // };
+  const handleForgot = async (values: { email: string }) => {
+    try {
+      const res = await resetPassword(values);
+      //navigate ve trang chu
+      if (res.data) {
+        //navigate ve trang chu, display message
+        navigate("/Login");
+      } else {
+        //display loi?, ve trang chu
+        navigate("/Login");
+      }
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  };
 
-  // const onFinish = async (value: ISignUpFormValue) => {
-  //   setLoading(true);
-  //   try {
-  //     await handleForgot(value);
-  //     setLoading(false);
-  //   } catch (error) {
-  //     setLoading(false);
-  //   }
-  // };
+  const onFinish = async (values: { email: string }) => {
+    setLoading(true);
+    try {
+      await handleForgot(values);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="forgot-container">
       <Typography.Title level={2}>Forgot Password</Typography.Title>
       <Form form={form} onFinish={onFinish}>
         <Form.Item
-          name="username"
-          rules={[{ required: true, message: "Please input your Username!" }]}
-        >
-          <Input placeholder="Username" />
-        </Form.Item>
-        <Form.Item
           name="email"
           rules={[{ required: true, message: "Please input your Email!" }]}
         >
           <Input placeholder="Email" />
-        </Form.Item>
-        <Form.Item
-          name="password"
-          rules={[{ required: true, message: "Please input your Password!" }]}
-        >
-          <Input.Password placeholder="Password" />
-        </Form.Item>
-        <Form.Item
-          name="confirm"
-          dependencies={["password"]}
-          hasFeedback
-          rules={[
-            {
-              required: true,
-              message: "Please confirm your password!",
-            },
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                if (!value || getFieldValue("password") === value) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(
-                  new Error("The two passwords that you entered do not match!")
-                );
-              },
-            }),
-          ]}
-        >
-          <Input.Password placeholder="Confirm Password" />
         </Form.Item>
 
         <Form.Item>
@@ -84,7 +52,7 @@ const ForgotPassword = () => {
             htmlType="submit"
             className="forgot-form-button"
           >
-            Sign up
+            Submit
           </Button>
         </Form.Item>
       </Form>

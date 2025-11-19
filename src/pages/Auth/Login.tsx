@@ -4,23 +4,28 @@ import { Link } from "react-router-dom";
 import "./Auth.css";
 import { loginWithId } from "../../api/userApi";
 import { useState } from "react";
-import React from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ILoginFormValue {
   username: string;
   password: string;
 }
 
-// const GOOGLE_LOGIN = import.meta.env.GOOGLE_LOGIN;
-
 const Login = () => {
   const [form] = Form.useForm<ILoginFormValue>();
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleLogin = async (value: ILoginFormValue) => {
     try {
       const res = await loginWithId(value.username, value.password);
-      if (res.data) {
+      if (res) {
+        console.log(res);
+        localStorage.setItem("accessToken", res.accessToken);
+        navigate("/todo");
+      } else {
+        console.error("Login failed: No access token received.");
+        console.log(res);
       }
     } catch (error) {
       console.error(error);
@@ -29,8 +34,7 @@ const Login = () => {
   };
 
   const handleGoogleLogin = async () => {
-    // window.location.href = GOOGLE_LOGIN;
-    window.location.href = "http://localhost:3000/auth/loginGoogle";
+    window.location.href = import.meta.env.VITE_GOOGLE_LOGIN;
   };
 
   const onFinish = async (value: ILoginFormValue) => {

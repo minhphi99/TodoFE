@@ -1,9 +1,9 @@
-import axios from "axios";
+import axios, { type AxiosRequestConfig } from "axios";
 import queryString from "query-string";
 import { refreshToken } from "./userApi";
 
 const axiosClient = axios.create({
-  baseURL: import.meta.env.BASE_URL,
+  baseURL: import.meta.env.VITE_BASE_URL,
   headers: {
     "content-type": "application/json",
   },
@@ -43,5 +43,20 @@ axiosClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+interface ApiResponse<T> {
+  message?: string;
+  data: T;
+  error?: string;
+}
+
+// export axiosClient.create{}
+export function post<T>(
+  url: string,
+  data?: any,
+  config?: AxiosRequestConfig<any>
+) {
+  return axiosClient.post<ApiResponse<T>>(url, data, config);
+}
 
 export default axiosClient;

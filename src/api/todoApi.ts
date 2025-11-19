@@ -1,19 +1,22 @@
 import axiosClient from "./axiosClient";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = import.meta.env.VITE_TODO_BASE_URL;
 
-export const getAllTodos = async (payload: DeviceInfoPayload) => {
+export const getAllTodos = async () => {
   try {
-    const res = await axiosClient.get(`${BASE_URL}`, payload);
-    return res.data.result;
+    const res = await axiosClient.get(`${BASE_URL}`);
+    return res.data;
   } catch (error) {
     return error;
   }
 };
 
-export const createTodo = async () => {
+export const createTodo = async (data: {
+  title: string;
+  description: string;
+}) => {
   try {
-    const res = await axiosClient.post(`${BASE_URL}`);
+    const res = await axiosClient.post(`${BASE_URL}`, data);
     return res.data.result;
   } catch (error) {
     return error;
@@ -29,9 +32,12 @@ export const getTodoById = async (id: string) => {
   }
 };
 
-export const updateTodoById = async (id: string) => {
+export const updateTodoById = async (
+  id: string,
+  data: { title: string; description: string }
+) => {
   try {
-    const res = await axiosClient.put(`${BASE_URL}/${id}`);
+    const res = await axiosClient.put(`${BASE_URL}/${id}`, data);
     return res.data.result;
   } catch (error) {
     return error;

@@ -1,14 +1,6 @@
-// import axios from "axios";
 import axiosClient from "./axiosClient";
 
-const BASE_URL = "http://localhost:3000/auth";
-
-// type ILoginGoogle = {
-//   code: string;
-//   redirectUri: string;
-//   refreshToken?: string;
-//   grantType: string;
-// };
+const BASE_URL = import.meta.env.VITE_AUTH_BASE_URL;
 
 export const loginGoogle = async () => {
   const res = await axiosClient.get(`${import.meta.env.VITE_URL}/google`);
@@ -21,11 +13,16 @@ export const loginWithId = async (username: string, password: string) => {
       username,
       password,
     });
-    return res.data.result;
+    return res.data;
   } catch (error) {
     console.error(error);
   }
 };
+
+// interface User {
+//   id: string;
+//   username: string;
+// }
 
 export const registerUser = async (
   username: string,
@@ -34,13 +31,20 @@ export const registerUser = async (
   confirmPassword: string
 ) => {
   try {
+    // const res = await post<User>(`${BASE_URL}/register`, {
+    //   username,
+    //   email,
+    //   password,
+    //   confirmPassword,
+    // });
+    // res.data.data.username;
     const res = await axiosClient.post(`${BASE_URL}/register`, {
       username,
       email,
       password,
       confirmPassword,
     });
-    return res.data.result;
+    return res.status;
   } catch (error) {
     return error;
   }
@@ -67,18 +71,20 @@ export const logoutUser = async () => {
   }
 };
 
-export const resetPassword = async (newpassword: string) => {
+export const resetPassword = async (data: { email: string }) => {
   try {
-    const res = await axiosClient.post(`${BASE_URL}/forgotpw`, { newpassword });
+    const res = await axiosClient.post(`${BASE_URL}/forgotpw`, data);
     return res.data.result;
   } catch (error) {
     return error;
   }
 };
 
-export const forgotPassword = async () => {
+export const forgotPassword = async (token: string, newPassword: string) => {
   try {
-    const res = await axiosClient.post(`${BASE_URL}/resetpw/:id/:token`);
+    const res = await axiosClient.post(`${BASE_URL}/resetpw/${token}`, {
+      newPassword,
+    });
     return res.data.result;
   } catch (error) {
     return error;
