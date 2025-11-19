@@ -23,7 +23,7 @@ export async function refreshToken() {
   isRefreshing = true;
 
   try {
-    const res = await refreshClient.post("/auth/refresh", {
+    const res = await refreshClient.post("/refresh", {
       refreshToken: localStorage.getItem("refreshToken"),
     });
 
