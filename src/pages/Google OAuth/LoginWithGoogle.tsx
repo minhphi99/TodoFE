@@ -8,9 +8,10 @@ const LoginWithGoogle = () => {
   useEffect(() => {
     const handleGoogleRedirect = async () => {
       try {
-        const res = await handleRedirect();
-        if (res && res.accessToken) {
-          localStorage.setItem("accessToken", res.accessToken);
+        const params = new URLSearchParams(location.search);
+        const res = await handleRedirect(params.get("code") as string);
+        if (res && res.token) {
+          localStorage.setItem("accessToken", res.token);
           navigate("/todo");
         } else {
           // Handle case where accessToken is not in the response
@@ -24,7 +25,7 @@ const LoginWithGoogle = () => {
     };
 
     handleGoogleRedirect();
-  }, [navigate]);
+  }, []);
 
   return <div>Loading...</div>;
 };

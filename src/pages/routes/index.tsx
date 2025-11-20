@@ -8,6 +8,7 @@ import Todo from "../Todo/TodoList";
 import ResetPassword from "../Auth/ResetPassword";
 import EditTodo from "../Todo/EditTodo";
 import LoginWithGoogle from "../Google OAuth/LoginWithGoogle";
+import Profile from "../Todo/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -23,7 +24,7 @@ export const router = createBrowserRouter([
     element: <Signup />,
   },
   {
-    path: "/google/callback",
+    path: "/auth/google/callback",
     element: <LoginWithGoogle />,
   },
   {
@@ -45,5 +46,9 @@ export const router = createBrowserRouter([
   {
     path: "/todo/edit/:id",
     element: <EditTodo />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
   },
 ]);

@@ -129,10 +129,12 @@ export const forgotPassword = async (token: string, newPassword: string) => {
   }
 };
 
-export const handleRedirect = async () => {
+export const handleRedirect = async (code: string) => {
   try {
-    const res = await axiosClient.get(`${BASE_URL}/google/callback`);
-    return res.data.result;
+    const res = await axiosClient.get(
+      `${BASE_URL}/google/callback?code=${code}`
+    );
+    return res.data.user;
   } catch (error) {
     return error;
   }
